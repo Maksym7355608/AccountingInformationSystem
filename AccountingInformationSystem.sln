@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingInformationSystem", "AccountingInformationSystem\AccountingInformationSystem.csproj", "{AEEF04D1-DE28-4F82-B139-AA11178A7C6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountingInformationSystem", "AccountingInformationSystem\AccountingInformationSystem.csproj", "{AEEF04D1-DE28-4F82-B139-AA11178A7C6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingInformationSystem.Data", "AccountingInformationSystem.Data\AccountingInformationSystem.Data.csproj", "{F46A9D62-DC4E-4EE6-9FBA-E24A584DEF2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountingInformationSystem.Data", "AccountingInformationSystem.Data\AccountingInformationSystem.Data.csproj", "{F46A9D62-DC4E-4EE6-9FBA-E24A584DEF2A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountingInformationSystem.DI", "AccountingInformationSystem.DI\AccountingInformationSystem.DI.csproj", "{46F48943-176B-459C-8D02-CB1B037241F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountingInformationSystem.Finances", "AccountingInformationSystem.BL.Shedule\AccountingInformationSystem.Finances.csproj", "{3A5E0DCA-9F61-4438-BCA6-0E0ABE19DA5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingInformationSystem.Templates", "AccountingInformationSystem.Templates\AccountingInformationSystem.Templates.csproj", "{93ACD732-4D7F-4708-9CAB-46BF51509D70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{F46A9D62-DC4E-4EE6-9FBA-E24A584DEF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F46A9D62-DC4E-4EE6-9FBA-E24A584DEF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F46A9D62-DC4E-4EE6-9FBA-E24A584DEF2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46F48943-176B-459C-8D02-CB1B037241F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F48943-176B-459C-8D02-CB1B037241F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F48943-176B-459C-8D02-CB1B037241F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F48943-176B-459C-8D02-CB1B037241F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A5E0DCA-9F61-4438-BCA6-0E0ABE19DA5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A5E0DCA-9F61-4438-BCA6-0E0ABE19DA5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A5E0DCA-9F61-4438-BCA6-0E0ABE19DA5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A5E0DCA-9F61-4438-BCA6-0E0ABE19DA5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93ACD732-4D7F-4708-9CAB-46BF51509D70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93ACD732-4D7F-4708-9CAB-46BF51509D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93ACD732-4D7F-4708-9CAB-46BF51509D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93ACD732-4D7F-4708-9CAB-46BF51509D70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

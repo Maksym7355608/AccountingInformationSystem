@@ -22,7 +22,7 @@
         /// <summary>
         /// День народження
         /// </summary>
-        public DateOnly BirthDay { get; set; }
+        public DateTime BirthDay { get; set; }
         /// <summary>
         /// Чи одружений
         /// </summary>
@@ -30,7 +30,7 @@
         /// <summary>
         /// Дата найняття
         /// </summary>
-        public DateOnly EmploymentDate { get; set; }
+        public DateTime EmploymentDate { get; set; }
         /// <summary>
         /// Позиція
         /// </summary>
@@ -50,10 +50,10 @@
         /// <summary>
         /// Податкова соціальна пільга
         /// </summary>
-        public Benefits Benefits { get; set; }
+        public EBenefits Benefits { get; set; }
         /// <summary>
         /// Робочий графік
         /// </summary>
-        public WorkShedule WorkShedule { get; set; }
+        public List<WorkShedule> WorkShedules { get; set; }
     }
 }

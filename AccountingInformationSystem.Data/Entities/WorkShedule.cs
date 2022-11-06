@@ -14,6 +14,6 @@
         /// <summary>
         /// Робочий графік робітника
         /// </summary>
-        public Dictionary<DateOnly, decimal> Shedule { get; set; }
+        public List<Shedule> Shedule { get; set; }
     }
 }
