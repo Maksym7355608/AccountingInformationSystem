@@ -5,6 +5,14 @@ namespace AccountingInformationSystem.Data.Entities
     public class Shedule
     {
         public int Id { get; set; }
+        /// /// <summary>
+        /// identity employee code
+        /// </summary>
+        public long IdentificationNumber { get; set; }
+        /// <summary>
+        /// Дата
+        /// </summary>
+        public DateTime Date { get; set; }
         /// <summary>
         /// Ід робочого графіку
         /// </summary>

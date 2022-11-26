@@ -30,11 +30,11 @@ namespace AccountingInformationSystem.Finances.Services
             return new FinanceDataModel
             {
                 EmployeeId = filter.EmployeeId,
-                ReportPeriod = filter.Period,
+                ReportPeriod = filter.Period.Value,
                 FullName = dataLoader.Employee.FullName,
-                WorkPayout = GetPayout(dataLoader.Employee.Salary, filter.Period, workShedule.Shedule.Where(x => x.DayType == EDayType.Work).Sum(x => x.Time)),
-                SickPayout = GetPayout(dataLoader.Employee.Salary, filter.Period, workShedule.Shedule.Where(x => x.DayType == EDayType.Sick).Sum(x => x.Time)),
-                VacationPayout = GetPayout(dataLoader.Employee.Salary, filter.Period, workShedule.Shedule.Where(x => x.DayType == EDayType.Vacation).Sum(x => x.Time)),
+                WorkPayout = GetPayout(dataLoader.Employee.Salary, filter.Period.Value, workShedule.Shedule.Where(x => x.DayType == EDayType.Work).Sum(x => x.Time)),
+                SickPayout = GetPayout(dataLoader.Employee.Salary, filter.Period.Value, workShedule.Shedule.Where(x => x.DayType == EDayType.Sick).Sum(x => x.Time)),
+                VacationPayout = GetPayout(dataLoader.Employee.Salary, filter.Period.Value, workShedule.Shedule.Where(x => x.DayType == EDayType.Vacation).Sum(x => x.Time)),
                 DayOffs = workShedule.Shedule.Where(x => x.DayType == EDayType.DayOff).Count(),
                 Benefit = GetBenefits(dataLoader.Employee)
             };

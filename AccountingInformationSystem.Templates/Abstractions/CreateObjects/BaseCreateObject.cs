@@ -3,6 +3,6 @@
     public class BaseCreateObject
     {
         public long EmployeeId { get; set; }
-        public int Period { get; set; }
+        public int? Period { get; set; }
     }
 }

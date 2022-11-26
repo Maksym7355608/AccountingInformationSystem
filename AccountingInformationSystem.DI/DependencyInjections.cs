@@ -1,6 +1,7 @@
-﻿using AccountingInformationSystem.BL.Shedule.Interfaces;
-using AccountingInformationSystem.BL.Shedule.Services;
-using AccountingInformationSystem.Data.EF;
+﻿using AccountingInformationSystem.Data.EF;
+using AccountingInformationSystem.Finances.Infrastructure.AutoMapper;
+using AccountingInformationSystem.Finances.Interfaces;
+using AccountingInformationSystem.Finances.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,9 +17,14 @@ namespace AccountingInformationSystem.DI
             service.AddDbContext<AccountingInformationSystemContext>(options => options.UseSqlServer(connectionString));
         }
 
-        public static void AddFinaces(this IServiceCollection service)
+        public static void AddFinances(this IServiceCollection service)
         {
             service.AddScoped<ISalaryService, SalaryService>();
+        }
+
+        public static void AddAutoMappers(this IServiceCollection service)
+        {
+            service.AddAutoMapper(typeof(FinancesAutoMapperProfile));
         }
     }
 }
