@@ -6,7 +6,6 @@ using AccountingInformationSystem.Shedules.DataModels;
 using AccountingInformationSystem.Shedules.Interfaces;
 using AccountingInformationSystem.Templates.Helpers;
 using AutoMapper;
-using System.Linq;
 
 namespace AccountingInformationSystem.Shedules.Services
 {
@@ -26,61 +25,73 @@ namespace AccountingInformationSystem.Shedules.Services
         {
             if (_dataLoader == null)
                 _dataLoader = LoadCacheData(filter);
-            return _dataLoader.WorkShedule;
+            return _dataLoader.WorkShedules;
         }
 
-        public async Task UpdateWorkDaysAsync(IEnumerable<SheduleDataModel> shedules)
+        private Func<WorkSheduleDataModel, bool> GetContainsSheduleFilter(IEnumerable<WorkSheduleDataModel> shedules)
         {
-            var checker = shedules.Where(shedule => !_mapper.Map<List<SheduleDataModel>>(_dataLoader.WorkShedule.Select(sh => sh.Shedule))
-                                        .Contains(shedule));
-            if (checker.Any())
-                await UploadWorkDaysAsync(shedules);
+            return x =>
+                shedules.Select(sh => sh.Period).Contains(x.Period);
+        }
 
-            _sqlContext.Shedules.UpdateRange(_mapper.Map<IEnumerable<Shedule>>(shedules));
+        public async Task UpdateWorkDaysAsync(IEnumerable<WorkSheduleDataModel> shedules)
+        {
+            var mappedModel = _mapper.Map<IEnumerable<WorkShedule>>(shedules);
+            var containsPeriodsShedule = _dataLoader.WorkShedules.Where(GetContainsSheduleFilter(shedules));
+            var notContainsPeriodsShedule = _dataLoader.WorkShedules.Where(x => !containsPeriodsShedule.Contains(x));
+            if (notContainsPeriodsShedule.Any())
+                await UploadWorkDaysAsync(notContainsPeriodsShedule);
+
+            _sqlContext.WorkShedules.UpdateRange(_mapper.Map<IEnumerable<WorkShedule>>(containsPeriodsShedule));
             await _sqlContext.SaveChangesAsync();
         }
 
-        public async Task UploadWorkDaysAsync(IEnumerable<SheduleDataModel> shedules)
+        public async Task UploadWorkDaysAsync(IEnumerable<WorkSheduleDataModel> shedules)
         {
-            var checker = shedules.Where(shedule => !_mapper.Map<List<SheduleDataModel>>(_dataLoader.WorkShedule.Select(sh => sh.Shedule))
-                                        .Contains(shedule));
-            if (checker.Any())
-                await UpdateWorkDaysAsync(shedules);
+            var containsPeriodsShedule = _dataLoader.WorkShedules.Where(GetContainsSheduleFilter(shedules));
+            var notContainsPeriodsShedule = _dataLoader.WorkShedules.Where(x => !containsPeriodsShedule.Contains(x));
+            if (containsPeriodsShedule.Any())
+                await UpdateWorkDaysAsync(containsPeriodsShedule);
 
-            _sqlContext.Shedules.AddRange(_mapper.Map<IEnumerable<Shedule>>(shedules));
+            _sqlContext.Shedules.AddRange(_mapper.Map<IEnumerable<Shedule>>(notContainsPeriodsShedule));
             await _sqlContext.SaveChangesAsync();
         }
 
         private SheduleDataLoader LoadCacheData(SheduleCreateObject filter)
         {
-            return new SheduleDataLoader
-            {
-                Id = filter.EmployeeId,
-                WorkShedule = GetWorkShedules(filter)
-            };
+            var loadedData = new SheduleDataLoader();
+            loadedData.WorkShedules = GetWorkShedules(filter);
+            loadedData.Shedules = loadedData.WorkShedules.SelectMany(x => x.Shedule).ToList();
+
+            loadedData.Ids = loadedData.WorkShedules.Select(x => x.Id);
+
+            return loadedData;
         }
 
         private List<WorkSheduleDataModel> GetWorkShedules(SheduleCreateObject filter)
         {
             var employeesIds = _sqlContext.Employees.Where(employee => GetEmployeeFilter(employee, filter))
                 .Select(employees => employees.IdentificationNumber);
-            var shedule = _sqlContext.WorkShedules.Where(shedule => GetSheduleFilter(shedule, employeesIds, filter));
-   
+            var shedule = _sqlContext.WorkShedules.Where(GetSheduleFilter(employeesIds, filter))
+                    .ToList();
+
             if (shedule.Any())
                 return _mapper.Map<List<WorkSheduleDataModel>>(shedule);
             else
                 return new List<WorkSheduleDataModel>();
         }
 
-        private bool GetSheduleFilter(WorkShedule shedule, IEnumerable<long> ids, SheduleCreateObject filter) => 
-            ids.Contains(shedule.IdentificationNumber) &&
-            shedule.Period >= filter.DateFrom.ToPeriod() &&
-            shedule.Period <= filter.DateTo.ToPeriod();
+        private Func<WorkShedule, bool> GetSheduleFilter(IEnumerable<long> ids, SheduleCreateObject filter)
+        {
+            return (shedule =>
+                ids.Contains(shedule.IdentificationNumber) &&
+                shedule.Period >= filter.DateFrom.ToPeriod() &&
+                shedule.Period <= filter.DateTo.ToPeriod());
+        }
 
         private bool GetEmployeeFilter(Employee employee, SheduleCreateObject filter) =>
             (string.IsNullOrEmpty(filter.OrganizationDepartament) || employee.Departament == filter.OrganizationDepartament) &&
-            (string.IsNullOrEmpty(filter.OrganizationUnit) || employee.Unit == filter.OrganizationUnit) &&
-            (string.IsNullOrEmpty(filter.Position) || employee.Position == filter.Position);
+            (string.IsNullOrEmpty(filter.OrganizationUnit) || employee.Unit == filter.OrganizationUnit);
     }
 }
 

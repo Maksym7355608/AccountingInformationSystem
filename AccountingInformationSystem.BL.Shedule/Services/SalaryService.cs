@@ -21,23 +21,40 @@ namespace AccountingInformationSystem.Finances.Services
             _mapper = mapper;
         }
 
-        public FinanceDataModel CalculateSalary(BaseCreateObject createObject)
+        public IEnumerable<FinanceDataModel> CalculatePayoutsByFilter(BaseCreateObject createObject)
         {
             var filter = (FinancesCreateObject)createObject;
 
             var dataLoader = LoadCasheData(filter);
-            var workShedule = dataLoader.Employee.WorkShedules.FirstOrDefault(x => x.Period == filter.Period);
-            return new FinanceDataModel
+
+            var periods = ExtensionHelper.GetPeriodsArray(filter.PeriodFrom, filter.PeriodTo);
+
+            var workShedules = dataLoader.Employees.GroupBy(x => x.Key)
+                .ToDictionary(k => k.Key, v => v.SelectMany(x => x.Value.WorkShedules)
+                .Where(x => ExtensionHelper.PeriodFilter(filter.PeriodFrom, x.PeriodFrom, filter.PeriodTo, x.PeriodTo))
+                .SelectMany(shedule => shedule.Shedule)
+                .ToList());
+
+            foreach (var key in workShedules.Keys)
             {
-                EmployeeId = filter.EmployeeId,
-                ReportPeriod = filter.Period.Value,
-                FullName = dataLoader.Employee.FullName,
-                WorkPayout = GetPayout(dataLoader.Employee.Salary, filter.Period.Value, workShedule.Shedule.Where(x => x.DayType == EDayType.Work).Sum(x => x.Time)),
-                SickPayout = GetPayout(dataLoader.Employee.Salary, filter.Period.Value, workShedule.Shedule.Where(x => x.DayType == EDayType.Sick).Sum(x => x.Time)),
-                VacationPayout = GetPayout(dataLoader.Employee.Salary, filter.Period.Value, workShedule.Shedule.Where(x => x.DayType == EDayType.Vacation).Sum(x => x.Time)),
-                DayOffs = workShedule.Shedule.Where(x => x.DayType == EDayType.DayOff).Count(),
-                Benefit = GetBenefits(dataLoader.Employee)
-            };
+                yield return new FinanceDataModel
+                {
+                    EmployeeId = key,
+                    ReportPeriodFrom = filter.PeriodFrom,
+                    ReportPeriodTo = filter.PeriodTo,
+                    FullName = dataLoader.Employees[key].FullName,
+                    WorkPayout = GetPayout(dataLoader.Employees[key].Salary, periods, GetTimeByDayTypes(workShedules[key], EDayType.Work)),
+                    SickPayout = GetPayout(dataLoader.Employees[key].Salary, periods, GetTimeByDayTypes(workShedules[key], EDayType.Sick)),
+                    VacationPayout = GetPayout(dataLoader.Employees[key].Salary, periods, GetTimeByDayTypes(workShedules[key], EDayType.Vacation)),
+                    DayOffs = workShedules[key].Count(x => x.DayType == EDayType.DayOff),
+                    Benefit = GetBenefits(dataLoader.Employees[key])
+                };
+            }
+        }
+
+        private decimal GetTimeByDayTypes(List<SheduleDataModel> shedules, EDayType dayType)
+        {
+            return shedules.Where(x => x.DayType == EDayType.Work).Sum(x => x.Time);
         }
 
         private decimal? GetBenefits(EmployeeDataModel employee)
@@ -45,19 +62,23 @@ namespace AccountingInformationSystem.Finances.Services
             return employee.Benefits switch
             {
                 EBenefits.Kids => CalculateKidsBenefits(employee.Salary, employee.Kids.Value, 100),
+
                 EBenefits.Widow
                 or EBenefits.Chernobyl
                 or EBenefits.KidsWithDisability => CalculateKidsBenefits(employee.Salary, employee.Kids.Value, 150),
+
                 EBenefits.FirstDisability
                 or EBenefits.SecondDisability
                 or EBenefits.Student
                 or EBenefits.AssignedLifetimeScholarship
                 or EBenefits.MilitaryAfterWWII => CalculateBenefits(employee.Salary, 150),
+
                 EBenefits.HeroTitul
                 or EBenefits.FourMedalForCourage
                 or EBenefits.MilitaryInWWII
                 or EBenefits.PrisonersOfConcentrationCamps
                 or EBenefits.PersonRecognizedAsRepressedOrRehabilitated => CalculateBenefits(employee.Salary, 200),
+
                 _ => null,
             };
         }
@@ -78,15 +99,18 @@ namespace AccountingInformationSystem.Finances.Services
                 return (ValueHelper.TaxSocialBenefit * ((decimal)percent / 100)) * kids;
         }
 
-        private Payout GetPayout(decimal salary, int period, decimal hours)
+        private Payout GetPayout(decimal salary, int[] periods, decimal hours)
         {
             if (hours == 0)
                 return new Payout();
+            var payout = 0m;
+            foreach (var period in periods)
+            {
+                DateTime periodDateTime = period.ToDateTime();
 
-            DateTime periodDateTime = period.ToDateTime();
-
-            var workDaysAtMonth = WeekDaysInMonth(periodDateTime.Year, periodDateTime.Month);
-            var payout = CalculatePayout(hours, workDaysAtMonth, salary);
+                var workDaysAtMonth = WeekDaysInMonth(periodDateTime.Year, periodDateTime.Month);
+                payout += CalculatePayout(hours, workDaysAtMonth, salary);
+            }
             return new Payout
             {
                 Hours = hours,
@@ -114,23 +138,39 @@ namespace AccountingInformationSystem.Finances.Services
         }
 
         #region Load Cashe Data
-        private EmployeeDataModel GetEmployee(long identificationNumber)
+        private Dictionary<long, EmployeeDataModel> GetEmployeesByFilters(FinancesCreateObject filter)
         {
-            var employee = _mapper.Map<Employee, EmployeeDataModel>(_sqlContext.Employees
-                .FirstOrDefault(emp => emp.IdentificationNumber == identificationNumber));
-            if (employee == null)
-                throw new Exception("Employee is not found");
-            return employee;
+            var employees = _sqlContext.Employees.Where(GetFilterValue(filter));
+            if (!employees.Any())
+                throw new Exception("Employees is not found");
+            var mappedModel = _mapper.Map<IEnumerable<EmployeeDataModel>>(employees);
+            return mappedModel.ToDictionary(k => k.Id, v => v);
         }
 
-        private FinancesDataLoader LoadCasheData(BaseCreateObject createObject)
+        private Func<Employee, bool> GetFilterValue(FinancesCreateObject filter)
         {
-            return new FinancesDataLoader
-            {
-                Id = createObject.EmployeeId,
-                Employee = GetEmployee(createObject.EmployeeId)
-            };
+            return (x => (string.IsNullOrEmpty(filter.Departament) && filter.Departament == x.Departament) &&
+                (string.IsNullOrEmpty(filter.Unit) && filter.Unit == x.Unit) &&
+                (filter.EmployeeId.HasValue && filter.EmployeeId.Value == x.IdentificationNumber));
         }
+
+        private FinancesDataLoader LoadCasheData(FinancesCreateObject filter)
+        {
+            var loadedData = new FinancesDataLoader();
+            loadedData.Employees = GetEmployeesByFilters(filter);
+            loadedData.Ids = loadedData.Employees.Select(x => x.Key);
+            return loadedData;
+        }
+
+        //public IEnumerable<EmployeeDataModel> GetEmployees()
+        //{
+        //    return _mapper.Map<IEnumerable<EmployeeDataModel>>(_sqlContext.Employees);
+        //}
+
+        //public EmployeeDataModel GetEmployee(long employeeId)
+        //{
+        //    return _mapper.Map<EmployeeDataModel>(_sqlContext.Employees.FirstOrDefault(x => x.IdentificationNumber == employeeId));
+        //}
         #endregion
     }
 }

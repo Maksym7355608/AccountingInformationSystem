@@ -5,6 +5,6 @@ namespace AccountingInformationSystem.Finances.Interfaces
 {
     public interface ISalaryService
     {
-        FinanceDataModel CalculateSalary(BaseCreateObject createObject);
+        IEnumerable<FinanceDataModel> CalculatePayoutsByFilter(BaseCreateObject createObject);
     }
 }

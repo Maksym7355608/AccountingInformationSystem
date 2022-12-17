@@ -2,7 +2,8 @@
 {
     public class BaseCreateObject
     {
-        public long EmployeeId { get; set; }
-        public int? Period { get; set; }
+        public long? EmployeeId { get; set; }
+        public int PeriodFrom { get; set; }
+        public int PeriodTo { get; set; }
     }
 }

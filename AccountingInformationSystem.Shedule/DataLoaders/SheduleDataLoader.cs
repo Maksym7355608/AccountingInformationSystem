@@ -5,7 +5,7 @@ namespace AccountingInformationSystem.Shedules.DataLoaders
 {
     public class SheduleDataLoader : BaseDataLoader
     {
-        public List<WorkSheduleDataModel> WorkShedule { get; set; }
+        public List<WorkSheduleDataModel> WorkShedules { get; set; }
         public List<SheduleDataModel> Shedules { get; set; }
     }
 }

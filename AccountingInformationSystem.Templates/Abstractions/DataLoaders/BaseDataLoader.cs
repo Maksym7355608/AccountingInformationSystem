@@ -2,6 +2,6 @@
 {
     public abstract class BaseDataLoader
     {
-        public long Id { get; set; }
+        public IEnumerable<long> Ids { get; set; }
     }
 }

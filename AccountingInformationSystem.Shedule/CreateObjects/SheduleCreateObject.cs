@@ -8,6 +8,5 @@ namespace AccountingInformationSystem.Shedules.CreateObjects
         public DateTime DateTo { get; set; }
         public string OrganizationDepartament { get; set; }
         public string OrganizationUnit { get; set; }
-        public string Position { get; set; }
     }
 }
