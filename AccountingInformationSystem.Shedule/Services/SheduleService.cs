@@ -21,17 +21,12 @@ namespace AccountingInformationSystem.Shedules.Services
             _mapper = mapper;
         }
 
+        #region Main
         public IEnumerable<WorkSheduleDataModel> GetWorkShedulesByFilters(SheduleCreateObject filter)
         {
             if (_dataLoader == null)
                 _dataLoader = LoadCacheData(filter);
             return _dataLoader.WorkShedules;
-        }
-
-        private Func<WorkSheduleDataModel, bool> GetContainsSheduleFilter(IEnumerable<WorkSheduleDataModel> shedules)
-        {
-            return x =>
-                shedules.Select(sh => sh.Period).Contains(x.Period);
         }
 
         public async Task UpdateShedulesAsync(IEnumerable<WorkSheduleDataModel> shedules)
@@ -56,6 +51,17 @@ namespace AccountingInformationSystem.Shedules.Services
             _sqlContext.Shedules.AddRange(_mapper.Map<IEnumerable<Shedule>>(notContainsPeriodsShedule));
             await _sqlContext.SaveChangesAsync();
         }
+        #endregion
+
+        #region helpers methods
+        private Func<WorkSheduleDataModel, bool> GetContainsSheduleFilter(IEnumerable<WorkSheduleDataModel> shedules)
+        {
+            return x =>
+                shedules.Select(sh => sh.Period).Contains(x.Period);
+        }
+        #endregion
+
+        #region Load cache data
 
         private SheduleDataLoader LoadCacheData(SheduleCreateObject filter)
         {
@@ -88,6 +94,7 @@ namespace AccountingInformationSystem.Shedules.Services
         private bool GetEmployeeFilter(Employee employee, SheduleCreateObject filter) =>
             (string.IsNullOrEmpty(filter.OrganizationDepartament) || employee.Departament == filter.OrganizationDepartament) &&
             (string.IsNullOrEmpty(filter.OrganizationUnit) || employee.Unit == filter.OrganizationUnit);
+        #endregion
     }
 }
 

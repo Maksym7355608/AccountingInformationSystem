@@ -21,16 +21,16 @@ namespace AccountingInformationSystem.Finances.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult CalculatePayments([FromQuery] CalculationPayoutCreateCommand cmd)
         {
             var createObject = new FinancesCreateObject
             {
                 EmployeeId = cmd.EmployeeId,
-                OrganizationDepartament = cmd.Departament,
-                OrganizationUnit = cmd.Unit,
+                OrganizationDepartament = cmd.OrganizationDepartament,
+                OrganizationUnit = cmd.OrganizationUnit,
                 PeriodFrom = cmd.DateFrom.ToPeriod(),
-                PeriodTo = cmd.DateTo.ToPeriod(),
+                PeriodTo = cmd.DateTo.HasValue ? cmd.DateTo.Value.ToPeriod() : DateTime.Now.ToPeriod().PreviousPeriod(),
             };
 
             var resultModel = _mapper.Map<List<FinanceViewModel>>(_salaryService.CalculatePayoutsByFilter(createObject).ToList());

@@ -21,6 +21,7 @@ namespace AccountingInformationSystem.Finances.Services
             _mapper = mapper;
         }
 
+        #region Main
         public IEnumerable<FinanceDataModel> CalculatePayoutsByFilter(BaseCreateObject createObject)
         {
             var filter = (FinancesCreateObject)createObject;
@@ -46,11 +47,6 @@ namespace AccountingInformationSystem.Finances.Services
                     Benefit = GetBenefits(employee.Value)
                 };
             }
-        }
-
-        private decimal GetTimeByDayTypes(List<SheduleDataModel> shedules, EDayType dayType)
-        {
-            return shedules.Where(x => x.DayType == dayType).Sum(x => x.Time);
         }
 
         private decimal? GetBenefits(EmployeeDataModel employee)
@@ -116,6 +112,10 @@ namespace AccountingInformationSystem.Finances.Services
             };
         }
 
+        #endregion
+
+        #region helpers methods
+
         private decimal CalculatePayout(decimal workHours, int workDaysAtMonth, decimal salary)
         {
             return (workDaysAtMonth * ValueHelper.NormalDayHours / salary) * workHours;
@@ -132,6 +132,13 @@ namespace AccountingInformationSystem.Finances.Services
                     & d.DayOfWeek < DayOfWeek.Saturday).Count();
             return weekDays;
         }
+
+        private decimal GetTimeByDayTypes(List<SheduleDataModel> shedules, EDayType dayType)
+        {
+            return shedules.Where(x => x.DayType == dayType).Sum(x => x.Time);
+        }
+
+        #endregion
 
         #region Load Cashe Data
         private Dictionary<long, EmployeeDataModel> GetEmployeesByFilters(FinancesCreateObject filter)
