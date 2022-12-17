@@ -20,7 +20,7 @@
             period++;
             if (period % 100 > 12)
             {
-                var newPeriod = period / 100 + 1;
+                var newPeriod = (period / 100 + 1) + 1;
                 return (int)newPeriod;
             }
             else return period;
@@ -36,5 +36,16 @@
             }
             else return period;
         }
+
+        public static int[] GetPeriodsArray(int periodFrom, int periodTo)
+        {
+            var periods = new List<int>();
+            for (var currentPeriod = periodFrom; currentPeriod <= periodTo; currentPeriod = currentPeriod.NextPeriod())
+            {
+                periods.Add(currentPeriod);
+            }
+            return periods.ToArray();
+        }
+        
     }
 }

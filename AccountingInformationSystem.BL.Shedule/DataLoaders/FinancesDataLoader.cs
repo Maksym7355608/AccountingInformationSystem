@@ -5,6 +5,6 @@ namespace AccountingInformationSystem.Finances.DataLoaders
 {
     public class FinancesDataLoader : BaseDataLoader
     {
-        public EmployeeDataModel Employee { get; set; }
+        public Dictionary<long, EmployeeDataModel> Employees { get; set; }
     }
 }

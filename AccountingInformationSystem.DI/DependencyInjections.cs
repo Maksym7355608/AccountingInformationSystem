@@ -2,6 +2,9 @@
 using AccountingInformationSystem.Finances.Infrastructure.AutoMapper;
 using AccountingInformationSystem.Finances.Interfaces;
 using AccountingInformationSystem.Finances.Services;
+using AccountingInformationSystem.Shedules.Infrastructure.AutoMappers;
+using AccountingInformationSystem.Shedules.Interfaces;
+using AccountingInformationSystem.Shedules.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,9 +25,15 @@ namespace AccountingInformationSystem.DI
             service.AddScoped<ISalaryService, SalaryService>();
         }
 
+        public static void AddShedules(this IServiceCollection service)
+        {
+            service.AddScoped<ISheduleService, SheduleService>();
+        }
+
         public static void AddAutoMappers(this IServiceCollection service)
         {
             service.AddAutoMapper(typeof(FinancesAutoMapperProfile));
+            service.AddAutoMapper(typeof(SheduleAutoMapperProfile));
         }
     }
 }

@@ -6,7 +6,7 @@ namespace AccountingInformationSystem.Shedules.Interfaces
     public interface ISheduleService
     {
         IEnumerable<WorkSheduleDataModel> GetWorkShedulesByFilters(SheduleCreateObject filter);
-        Task UploadWorkDaysAsync(IEnumerable<SheduleDataModel> shedules);
-        Task UpdateWorkDaysAsync(IEnumerable<SheduleDataModel> shedules);
+        Task AddShedulesAsync(IEnumerable<WorkSheduleDataModel> shedules);
+        Task UpdateShedulesAsync(IEnumerable<WorkSheduleDataModel> shedules);
     }
 }
