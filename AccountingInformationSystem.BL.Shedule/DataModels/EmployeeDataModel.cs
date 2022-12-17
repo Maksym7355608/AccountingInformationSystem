@@ -21,8 +21,7 @@ namespace AccountingInformationSystem.Finances.DataModels
         /// identity employee code
         /// </summary>
         public long Id { get; set; }
-        public int PeriodFrom { get; set; }
-        public int PeriodTo { get; set; }
+        public int Period { get; set; }
         public List<SheduleDataModel> Shedule { get; set; }
     }
 

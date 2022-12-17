@@ -4,7 +4,7 @@ namespace AccountingInformationSystem.Finances.CreateObject
 {
     public class FinancesCreateObject : BaseCreateObject
     {
-        public string Departament { get; set; }
-        public string Unit { get; set; }
+        public string OrganizationDepartament { get; set; }
+        public string OrganizationUnit { get; set; }
     }
 }

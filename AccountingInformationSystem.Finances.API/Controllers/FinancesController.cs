@@ -27,8 +27,8 @@ namespace AccountingInformationSystem.Finances.API.Controllers
             var createObject = new FinancesCreateObject
             {
                 EmployeeId = cmd.EmployeeId,
-                Departament = cmd.Departament,
-                Unit = cmd.Unit,
+                OrganizationDepartament = cmd.Departament,
+                OrganizationUnit = cmd.Unit,
                 PeriodFrom = cmd.DateFrom.ToPeriod(),
                 PeriodTo = cmd.DateTo.ToPeriod(),
             };

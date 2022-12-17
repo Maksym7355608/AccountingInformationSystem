@@ -4,12 +4,12 @@
     {
         public long EmployeeId { get; set; }
         public string FullName { get; set; }
-        public int ReportPeriodFrom { get; set; }
-        public int ReportPeriodTo { get; set; }
+        public int PeriodFrom { get; set; }
+        public int? PeriodTo { get; set; }
         public Payout WorkPayout { get; set; }
         public Payout SickPayout { get; set; }
         public Payout VacationPayout { get; set; }
-        public int? DayOffs { get; set; }
+        public int DayOffs { get; set; }
         public decimal? Benefit { get; set; }
         public decimal SummaryPayout => Benefit.HasValue ?
             WorkPayout.SummaryPayout + SickPayout.SummaryPayout + VacationPayout.SummaryPayout + Benefit.Value :

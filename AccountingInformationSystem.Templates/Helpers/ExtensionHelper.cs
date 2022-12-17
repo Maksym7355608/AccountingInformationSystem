@@ -37,9 +37,6 @@
             else return period;
         }
 
-        public static bool PeriodFilter(int periodFrom1, int periodFrom2, int periodTo1, int periodTo2) =>
-            periodFrom1 == periodFrom2 && periodTo1 == periodTo2;
-
         public static int[] GetPeriodsArray(int periodFrom, int periodTo)
         {
             var periods = new List<int>();

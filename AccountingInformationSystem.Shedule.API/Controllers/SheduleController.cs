@@ -30,7 +30,7 @@ namespace AccountingInformationSystem.Shedules.API.Controllers
                 OrganizationDepartament = cmd.OrganizationDepartament,
                 OrganizationUnit = cmd.OrganizationUnit,
                 DateFrom = cmd.DateFrom,
-                DateTo = cmd.DateTo
+                DateTo = cmd.DateTo ?? DateTime.Now
             };
 
             var shedules = _mapper.Map<List<WorkSheduleViewModel>>(_sheduleService.GetWorkShedulesByFilters(createObject).ToList());
@@ -45,7 +45,7 @@ namespace AccountingInformationSystem.Shedules.API.Controllers
         {
             var mappedShedules = _mapper.Map<List<WorkSheduleDataModel>>(newShedules);
 
-            _sheduleService.UploadWorkDaysAsync(mappedShedules);
+            _sheduleService.AddShedulesAsync(mappedShedules);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -58,7 +58,7 @@ namespace AccountingInformationSystem.Shedules.API.Controllers
         {
             var mappedShedules = _mapper.Map<List<WorkSheduleDataModel>>(newShedules);
 
-            _sheduleService.UpdateWorkDaysAsync(mappedShedules);
+            _sheduleService.UpdateShedulesAsync(mappedShedules);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

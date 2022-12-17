@@ -6,6 +6,6 @@
         public string Unit { get; set; }
         public long? EmployeeId { get; set; }
         public DateTime DateFrom { get; set; }
-        public DateTime DateTo { get; set; }
+        public DateTime? DateTo { get; set; }
     }
 }

@@ -1,14 +1,16 @@
-﻿namespace AccountingInformationSystem.Finances.API.ViewModels
+﻿
+namespace AccountingInformationSystem.Finances.API.ViewModels
 {
     public class FinanceViewModel
     {
         public long EmployeeId { get; set; }
         public string FullName { get; set; }
-        public int ReportPeriod { get; set; }
+        public int PeriodFrom { get; set; }
+        public int PeriodTo { get; set; }
         public PayoutViewModel WorkPayout { get; set; }
         public PayoutViewModel SickPayout { get; set; }
         public PayoutViewModel VacationPayout { get; set; }
-        public int? DayOffs { get; set; }
+        public int DayOffs { get; set; }
         public decimal? Benefit { get; set; }
         public decimal SummaryPayout => Benefit.HasValue ?
             WorkPayout.SummaryPayout + SickPayout.SummaryPayout + VacationPayout.SummaryPayout + Benefit.Value :

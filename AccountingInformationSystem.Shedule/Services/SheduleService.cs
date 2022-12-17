@@ -34,24 +34,24 @@ namespace AccountingInformationSystem.Shedules.Services
                 shedules.Select(sh => sh.Period).Contains(x.Period);
         }
 
-        public async Task UpdateWorkDaysAsync(IEnumerable<WorkSheduleDataModel> shedules)
+        public async Task UpdateShedulesAsync(IEnumerable<WorkSheduleDataModel> shedules)
         {
             var mappedModel = _mapper.Map<IEnumerable<WorkShedule>>(shedules);
             var containsPeriodsShedule = _dataLoader.WorkShedules.Where(GetContainsSheduleFilter(shedules));
             var notContainsPeriodsShedule = _dataLoader.WorkShedules.Where(x => !containsPeriodsShedule.Contains(x));
             if (notContainsPeriodsShedule.Any())
-                await UploadWorkDaysAsync(notContainsPeriodsShedule);
+                await AddShedulesAsync(notContainsPeriodsShedule);
 
             _sqlContext.WorkShedules.UpdateRange(_mapper.Map<IEnumerable<WorkShedule>>(containsPeriodsShedule));
             await _sqlContext.SaveChangesAsync();
         }
 
-        public async Task UploadWorkDaysAsync(IEnumerable<WorkSheduleDataModel> shedules)
+        public async Task AddShedulesAsync(IEnumerable<WorkSheduleDataModel> shedules)
         {
             var containsPeriodsShedule = _dataLoader.WorkShedules.Where(GetContainsSheduleFilter(shedules));
             var notContainsPeriodsShedule = _dataLoader.WorkShedules.Where(x => !containsPeriodsShedule.Contains(x));
             if (containsPeriodsShedule.Any())
-                await UpdateWorkDaysAsync(containsPeriodsShedule);
+                await UpdateShedulesAsync(containsPeriodsShedule);
 
             _sqlContext.Shedules.AddRange(_mapper.Map<IEnumerable<Shedule>>(notContainsPeriodsShedule));
             await _sqlContext.SaveChangesAsync();
@@ -61,10 +61,6 @@ namespace AccountingInformationSystem.Shedules.Services
         {
             var loadedData = new SheduleDataLoader();
             loadedData.WorkShedules = GetWorkShedules(filter);
-            loadedData.Shedules = loadedData.WorkShedules.SelectMany(x => x.Shedule).ToList();
-
-            loadedData.Ids = loadedData.WorkShedules.Select(x => x.Id);
-
             return loadedData;
         }
 

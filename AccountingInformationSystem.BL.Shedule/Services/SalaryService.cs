@@ -29,32 +29,28 @@ namespace AccountingInformationSystem.Finances.Services
 
             var periods = ExtensionHelper.GetPeriodsArray(filter.PeriodFrom, filter.PeriodTo);
 
-            var workShedules = dataLoader.Employees.GroupBy(x => x.Key)
-                .ToDictionary(k => k.Key, v => v.SelectMany(x => x.Value.WorkShedules)
-                .Where(x => ExtensionHelper.PeriodFilter(filter.PeriodFrom, x.PeriodFrom, filter.PeriodTo, x.PeriodTo))
-                .SelectMany(shedule => shedule.Shedule)
-                .ToList());
-
-            foreach (var key in workShedules.Keys)
+            foreach (var employee in dataLoader.Employees)
             {
+                var shedules = employee.Value.WorkShedules.Where(x => x.Period >= filter.PeriodFrom && (filter.PeriodTo >= x.Period))
+                    .SelectMany(x => x.Shedule).ToList();
                 yield return new FinanceDataModel
                 {
-                    EmployeeId = key,
-                    ReportPeriodFrom = filter.PeriodFrom,
-                    ReportPeriodTo = filter.PeriodTo,
-                    FullName = dataLoader.Employees[key].FullName,
-                    WorkPayout = GetPayout(dataLoader.Employees[key].Salary, periods, GetTimeByDayTypes(workShedules[key], EDayType.Work)),
-                    SickPayout = GetPayout(dataLoader.Employees[key].Salary, periods, GetTimeByDayTypes(workShedules[key], EDayType.Sick)),
-                    VacationPayout = GetPayout(dataLoader.Employees[key].Salary, periods, GetTimeByDayTypes(workShedules[key], EDayType.Vacation)),
-                    DayOffs = workShedules[key].Count(x => x.DayType == EDayType.DayOff),
-                    Benefit = GetBenefits(dataLoader.Employees[key])
+                    EmployeeId = employee.Key,
+                    PeriodFrom = filter.PeriodFrom,
+                    PeriodTo = filter.PeriodTo,
+                    FullName = employee.Value.FullName,
+                    WorkPayout = GetPayout(employee.Value.Salary, periods, GetTimeByDayTypes(shedules, EDayType.Work)),
+                    SickPayout = GetPayout(employee.Value.Salary, periods, GetTimeByDayTypes(shedules, EDayType.Sick)),
+                    VacationPayout = GetPayout(employee.Value.Salary, periods, GetTimeByDayTypes(shedules, EDayType.Vacation)),
+                    DayOffs = shedules.Count(x => x.DayType == EDayType.DayOff),
+                    Benefit = GetBenefits(employee.Value)
                 };
             }
         }
 
         private decimal GetTimeByDayTypes(List<SheduleDataModel> shedules, EDayType dayType)
         {
-            return shedules.Where(x => x.DayType == EDayType.Work).Sum(x => x.Time);
+            return shedules.Where(x => x.DayType == dayType).Sum(x => x.Time);
         }
 
         private decimal? GetBenefits(EmployeeDataModel employee)
@@ -65,7 +61,7 @@ namespace AccountingInformationSystem.Finances.Services
 
                 EBenefits.Widow
                 or EBenefits.Chernobyl
-                or EBenefits.KidsWithDisability => CalculateKidsBenefits(employee.Salary, employee.Kids.Value, 150),
+                or EBenefits.KidsWithDisability => CalculateKidsBenefits(employee.Salary, employee.Kids ?? 0, 150),
 
                 EBenefits.FirstDisability
                 or EBenefits.SecondDisability
@@ -149,8 +145,8 @@ namespace AccountingInformationSystem.Finances.Services
 
         private Func<Employee, bool> GetFilterValue(FinancesCreateObject filter)
         {
-            return (x => (string.IsNullOrEmpty(filter.Departament) && filter.Departament == x.Departament) &&
-                (string.IsNullOrEmpty(filter.Unit) && filter.Unit == x.Unit) &&
+            return (x => (string.IsNullOrEmpty(filter.OrganizationDepartament) && filter.OrganizationDepartament == x.Departament) &&
+                (string.IsNullOrEmpty(filter.OrganizationUnit) && filter.OrganizationUnit == x.Unit) &&
                 (filter.EmployeeId.HasValue && filter.EmployeeId.Value == x.IdentificationNumber));
         }
 
@@ -158,19 +154,8 @@ namespace AccountingInformationSystem.Finances.Services
         {
             var loadedData = new FinancesDataLoader();
             loadedData.Employees = GetEmployeesByFilters(filter);
-            loadedData.Ids = loadedData.Employees.Select(x => x.Key);
             return loadedData;
         }
-
-        //public IEnumerable<EmployeeDataModel> GetEmployees()
-        //{
-        //    return _mapper.Map<IEnumerable<EmployeeDataModel>>(_sqlContext.Employees);
-        //}
-
-        //public EmployeeDataModel GetEmployee(long employeeId)
-        //{
-        //    return _mapper.Map<EmployeeDataModel>(_sqlContext.Employees.FirstOrDefault(x => x.IdentificationNumber == employeeId));
-        //}
         #endregion
     }
 }
