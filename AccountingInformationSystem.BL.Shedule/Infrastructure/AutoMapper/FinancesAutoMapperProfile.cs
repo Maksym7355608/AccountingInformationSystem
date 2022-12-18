@@ -2,7 +2,7 @@
 using AccountingInformationSystem.Finances.DataModels;
 using AutoMapper;
 
-namespace AccountingInformationSystem.Finances.Infrastructure.AutoMapper
+namespace AccountingInformationSystem.Finances.Infrastructure.AutoMappers
 {
     public class FinancesAutoMapperProfile : Profile
     {

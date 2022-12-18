@@ -6,6 +6,6 @@ namespace AccountingInformationSystem.Templates.Abstractions.CreateObject
     {
         public long? EmployeeId { get; set; }
         public int PeriodFrom { get; set; }
-        public int PeriodTo { get; set; } = DateTime.Now.ToPeriod();
+        public int PeriodTo { get; set; } = DateTime.Now.ToPeriod().PreviousPeriod();
     }
 }

@@ -14,6 +14,7 @@ namespace AccountingInformationSystem.Finances.Services
     {
         private readonly AccountingInformationSystemContext _sqlContext;
         private readonly IMapper _mapper;
+        private static FinancesDataLoader _dataLoader;
 
         public SalaryService(AccountingInformationSystemContext context, IMapper mapper)
         {
@@ -26,11 +27,11 @@ namespace AccountingInformationSystem.Finances.Services
         {
             var filter = (FinancesCreateObject)createObject;
 
-            var dataLoader = LoadCasheData(filter);
+            _dataLoader ??= LoadCasheData(filter);
 
             var periods = ExtensionHelper.GetPeriodsArray(filter.PeriodFrom, filter.PeriodTo);
 
-            foreach (var employee in dataLoader.Employees)
+            foreach (var employee in _dataLoader.Employees)
             {
                 var shedules = employee.Value.WorkShedules.Where(x => x.Period >= filter.PeriodFrom && (filter.PeriodTo >= x.Period))
                     .SelectMany(x => x.Shedule).ToList();

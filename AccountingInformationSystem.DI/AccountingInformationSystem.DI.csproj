@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AccountingInformationSystem.Administration\AccountingInformationSystem.Administration.csproj" />
     <ProjectReference Include="..\AccountingInformationSystem.BL.Shedule\AccountingInformationSystem.Finances.csproj" />
     <ProjectReference Include="..\AccountingInformationSystem.Data\AccountingInformationSystem.Data.csproj" />
     <ProjectReference Include="..\AccountingInformationSystem.Shedule\AccountingInformationSystem.Shedules.csproj" />

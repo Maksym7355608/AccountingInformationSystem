@@ -1,12 +1,9 @@
-﻿namespace AccountingInformationSystem.Data.Entities
+﻿using AccountingInformationSystem.Data.Entities;
+
+namespace AccountingInformationSystem.CreateCommands
 {
-    public class Employee
+    public class UpdateEmployeeCreateCommand
     {
-        public int Id { get; set; }
-        /// <summary>
-        /// Табельний номер
-        /// </summary>
-        public long IdentificationNumber { get; set; }
         /// <summary>
         /// Ім'я
         /// </summary>
@@ -16,14 +13,6 @@
         /// </summary>
         public string Surname { get; set; }
         /// <summary>
-        /// По-батькові
-        /// </summary>
-        public string Fatherly { get; set; }
-        /// <summary>
-        /// День народження
-        /// </summary>
-        public DateTime BirthDay { get; set; }
-        /// <summary>
         /// Чи одружений
         /// </summary>
         public bool MarriedStatus { get; set; }
@@ -31,10 +20,6 @@
         /// Діти
         /// </summary>
         public int? Kids { get; set; }
-        /// <summary>
-        /// Дата найняття
-        /// </summary>
-        public DateTime EmploymentDate { get; set; }
         /// <summary>
         /// Позиція
         /// </summary>
@@ -56,8 +41,8 @@
         /// </summary>
         public EBenefits Benefits { get; set; }
         /// <summary>
-        /// Робочий графік
+        /// Дата переведення на іншу посаду
         /// </summary>
-        public List<WorkShedule> WorkShedules { get; set; }
+        public DateTime? TransferDate { get; set; }
     }
 }

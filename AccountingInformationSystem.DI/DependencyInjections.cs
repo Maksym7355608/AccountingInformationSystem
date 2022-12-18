@@ -1,5 +1,8 @@
-﻿using AccountingInformationSystem.Data.EF;
-using AccountingInformationSystem.Finances.Infrastructure.AutoMapper;
+﻿using AccountingInformationSystem.Administration.Infrastructure.AutoMappers;
+using AccountingInformationSystem.Administration.Interfaces;
+using AccountingInformationSystem.Administration.Services;
+using AccountingInformationSystem.Data.EF;
+using AccountingInformationSystem.Finances.Infrastructure.AutoMappers;
 using AccountingInformationSystem.Finances.Interfaces;
 using AccountingInformationSystem.Finances.Services;
 using AccountingInformationSystem.Shedules.Infrastructure.AutoMappers;
@@ -14,7 +17,7 @@ namespace AccountingInformationSystem.DI
     {
         public static void AddDatabase(this IServiceCollection service, string connectionString)
         {
-            if(connectionString == null)
+            if (connectionString == null)
                 throw new ArgumentNullException(nameof(connectionString));
 
             service.AddDbContext<AccountingInformationSystemContext>(options => options.UseSqlServer(connectionString));
@@ -30,10 +33,17 @@ namespace AccountingInformationSystem.DI
             service.AddScoped<ISheduleService, SheduleService>();
         }
 
+        public static void AddAdministrations(this IServiceCollection service)
+        {
+            service.AddScoped<IAdminsService, AdminService>();
+            service.AddScoped<IAuthService, AuthService>();
+        }
+
         public static void AddAutoMappers(this IServiceCollection service)
         {
             service.AddAutoMapper(typeof(FinancesAutoMapperProfile));
             service.AddAutoMapper(typeof(SheduleAutoMapperProfile));
+            service.AddAutoMapper(typeof(AdminAutoMapperProfile));
         }
     }
 }

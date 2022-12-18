@@ -1,8 +1,9 @@
-﻿namespace AccountingInformationSystem.Data.Entities
+﻿using AccountingInformationSystem.Data.Entities;
+
+namespace AccountingInformationSystem.CreateCommands
 {
-    public class Employee
+    public class AddEmployeeCreateCommand
     {
-        public int Id { get; set; }
         /// <summary>
         /// Табельний номер
         /// </summary>
@@ -55,9 +56,5 @@
         /// Податкова соціальна пільга
         /// </summary>
         public EBenefits Benefits { get; set; }
-        /// <summary>
-        /// Робочий графік
-        /// </summary>
-        public List<WorkShedule> WorkShedules { get; set; }
     }
 }

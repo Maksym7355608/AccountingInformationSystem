@@ -8,6 +8,7 @@ namespace AccountingInformationSystem.Data.EF
         public DbSet<Employee> Employees { get; set; }
         public DbSet<WorkShedule> WorkShedules { get; set; }
         public DbSet<Shedule> Shedules { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public AccountingInformationSystemContext(DbContextOptions<AccountingInformationSystemContext> options)
             : base(options)
