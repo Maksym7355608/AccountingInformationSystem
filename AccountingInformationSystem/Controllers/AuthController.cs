@@ -43,6 +43,9 @@ namespace AccountingInformationSystem.Controllers
         {
             var newUser = _mapper.Map<UserDataModel>(cmd);
 
+            if(cmd.TransferDate.HasValue)
+                newUser.EmploymentDate = cmd.TransferDate.Value;
+
             await _authService.UpdateUserInfoAsync(newUser);
             return Ok();
         }

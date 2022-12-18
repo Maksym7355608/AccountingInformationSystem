@@ -1,4 +1,5 @@
 using AccountingInformationSystem.DI;
+using AccountingInformationSystem.Shedules.API.Infrastructure.AutoMappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddShedules();
+builder.Services.AddAutoMappers();
+builder.Services.AddAutoMapper(typeof(SheduleMapperProfile));
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
 using AccountingInformationSystem.DI;
+using AccountingInformationSystem.Finances.API.Infrastructure.AutoMappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddFinances();
+builder.Services.AddAutoMappers();
+builder.Services.AddAutoMapper(typeof(FinanceMapperProfile));
 
 var app = builder.Build();
 

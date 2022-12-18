@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace AccountingInformationSystem.Finances.API.Filters
+namespace AccountingInformationSystem.Shedules.API.Filters
 {
     [AttributeUsage(AttributeTargets.All)]
-    public class FinanceExceptions : Attribute, IExceptionFilter
+    public class SheduleExceptionFilter : Attribute, IExceptionFilter
     {
         public void OnException(ExceptionContext context)
         {

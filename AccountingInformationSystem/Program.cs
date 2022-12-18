@@ -1,4 +1,5 @@
 using AccountingInformationSystem.DI;
+using AccountingInformationSystem.Infrastructure.AutoMappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -15,10 +16,13 @@ builder.Services.AddAdministrations();
 builder.Services.AddFinances();
 builder.Services.AddShedules();
 builder.Services.AddAutoMappers();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-var key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]);
+var secret = builder.Configuration["JWT:Key"];
+
+var key = Encoding.UTF8.GetBytes(secret ?? "sth key");
 builder.Services.AddAuthentication(cfg =>
 {
     cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

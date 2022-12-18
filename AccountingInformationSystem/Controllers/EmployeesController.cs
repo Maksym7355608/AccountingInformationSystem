@@ -65,6 +65,10 @@ namespace AccountingInformationSystem.Controllers
         public async Task<IActionResult> UpdateEmployeeAsync([FromQuery] UpdateEmployeeCreateCommand cmd)
         {
             var employee = _mapper.Map<EmployeeDataModel>(cmd);
+
+            if (cmd.TransferDate.HasValue)
+                employee.EmploymentDate = cmd.TransferDate.Value;
+
             await _service.AddNewEmployeeAsync(employee);
             return Ok();
         }

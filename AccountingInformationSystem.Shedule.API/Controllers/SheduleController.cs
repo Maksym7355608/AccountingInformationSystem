@@ -11,7 +11,7 @@ namespace AccountingInformationSystem.Shedules.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [SheduleExceptions]
+    [SheduleExceptionFilter]
     public class SheduleController : ControllerBase
     {
         private readonly ISheduleService _sheduleService;

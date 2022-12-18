@@ -11,7 +11,7 @@ namespace AccountingInformationSystem.Finances.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [FinanceExceptions]
+    [FinanceExceptionFilter]
     public class FinancesController : ControllerBase
     {
         private readonly ISalaryService _salaryService;
