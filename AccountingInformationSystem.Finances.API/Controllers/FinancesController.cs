@@ -1,4 +1,5 @@
 ﻿using AccountingInformationSystem.Finances.API.CreateCommands;
+using AccountingInformationSystem.Finances.API.Filters;
 using AccountingInformationSystem.Finances.API.ViewModels;
 using AccountingInformationSystem.Finances.CreateObject;
 using AccountingInformationSystem.Finances.Interfaces;
@@ -10,6 +11,7 @@ namespace AccountingInformationSystem.Finances.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [FinanceExceptions]
     public class FinancesController : ControllerBase
     {
         private readonly ISalaryService _salaryService;

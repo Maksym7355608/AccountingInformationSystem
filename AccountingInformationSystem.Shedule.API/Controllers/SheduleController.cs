@@ -5,11 +5,13 @@ using AccountingInformationSystem.Shedules.CreateObjects;
 using AccountingInformationSystem.Shedules.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using AccountingInformationSystem.Shedules.API.Filters;
 
 namespace AccountingInformationSystem.Shedules.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [SheduleExceptions]
     public class SheduleController : ControllerBase
     {
         private readonly ISheduleService _sheduleService;
